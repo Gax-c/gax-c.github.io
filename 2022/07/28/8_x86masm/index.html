@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>x86汇编学习笔记 - Gax&#039;s Blog</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="Gax&#039;s Blog"><meta name="msapplication-TileImage" content="/img/logo.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Gax&#039;s Blog"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="cbw：把AL扩充成AX，扩充时要考虑负数 cwd：把AX扩充成DX:AX，扩充时要考虑负数 cdq：把EAX扩充成EDX:EAX，扩充时要考虑负数 一般用于放大被除数，为之后的除法做准备  movsx：符号扩充 movzx：零扩充 12movsx ax, al ;将al符号扩充成axmovzx ax, al ;将al零扩充成ax"><meta property="og:type" content="blog"><meta property="og:title" content="x86汇编学习笔记"><meta property="og:url" content="https://gax-c.github.io/2022/07/28/8_x86masm/"><meta property="og:site_name" content="Gax&#039;s Blog"><meta property="og:description" content="cbw：把AL扩充成AX，扩充时要考虑负数 cwd：把AX扩充成DX:AX，扩充时要考虑负数 cdq：把EAX扩充成EDX:EAX，扩充时要考虑负数 一般用于放大被除数，为之后的除法做准备  movsx：符号扩充 movzx：零扩充 12movsx ax, al ;将al符号扩充成axmovzx ax, al ;将al零扩充成ax"><meta property="og:locale" content="zh_CN"><meta property="og:image" content="https://gax-c.github.io/images/8/cover.png"><meta property="article:published_time" content="2022-07-28T02:05:59.000Z"><meta property="article:modified_time" content="2022-07-28T02:14:55.285Z"><meta property="article:author" content="Gax"><meta property="article:tag" content="汇编"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/images/8/cover.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://gax-c.github.io/2022/07/28/8_x86masm/"},"headline":"x86汇编学习笔记","image":["https://gax-c.github.io/images/8/cover.png"],"datePublished":"2022-07-28T02:05:59.000Z","dateModified":"2022-07-28T02:14:55.285Z","author":{"@type":"Person","name":"Gax"},"publisher":{"@type":"Organization","name":"Gax's Blog","logo":{"@type":"ImageObject","url":"https://gax-c.github.io/img/logo.png"}},"description":"cbw：把AL扩充成AX，扩充时要考虑负数 cwd：把AX扩充成DX:AX，扩充时要考虑负数 cdq：把EAX扩充成EDX:EAX，扩充时要考虑负数 一般用于放大被除数，为之后的除法做准备  movsx：符号扩充 movzx：零扩充 12movsx ax, al ;将al符号扩充成axmovzx ax, al ;将al零扩充成ax"}</script><link rel="canonical" href="https://gax-c.github.io/2022/07/28/8_x86masm/"><link rel="icon" href="/img/logo.png"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" defer></script><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/css/justifiedGallery.min.css"><!--!--><!--!--><!--!--><style>.pace{-webkit-pointer-events:none;pointer-events:none;-webkit-user-select:none;-moz-user-select:none;user-select:none}.pace-inactive{display:none}.pace .pace-progress{background:#3273dc;position:fixed;z-index:2000;top:0;right:100%;width:100%;height:2px}</style><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--!--><!--!--><!-- hexo injector head_end start --><script>
+  (function () {
+      function switchTab() {
+          if (!location.hash) {
+            return;
+          }
+          Array
+              .from(document.querySelectorAll('.tab-content'))
+              .forEach($tab => {
+                  $tab.classList.add('is-hidden');
+              });
+          Array
+              .from(document.querySelectorAll('.tabs li'))
+              .forEach($tab => {
+                  $tab.classList.remove('is-active');
+              });
+          const $activeTab = document.querySelector(location.hash);
+          if ($activeTab) {
+              $activeTab.classList.remove('is-hidden');
+          }
+          const $tabMenu = document.querySelector(`a[href="${location.hash}"]`);
+          if ($tabMenu) {
+              $tabMenu.parentElement.classList.add('is-active');
+          }
+      }
+      switchTab();
+      window.addEventListener('hashchange', switchTab, false);
+  })();
+  </script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.0.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/img/logo.png" alt="Gax&#039;s Blog" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">主页</a><a class="navbar-item" href="/archives">归档</a><a class="navbar-item" href="/categories">分类</a><a class="navbar-item" href="/tags">标签</a><a class="navbar-item" href="/about">关于我</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Gax-c/Gax-c.github.io"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="搜索" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="/images/8/cover.png" alt="x86汇编学习笔记"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item"><time dateTime="2022-07-28T02:05:59.000Z" title="2022/7/28 10:05:59">2022-07-28</time>发表</span><span class="level-item"><time dateTime="2022-07-28T02:14:55.285Z" title="2022/7/28 10:14:55">2022-07-28</time>更新</span><span class="level-item"><a class="link-muted" href="/categories/%E6%B1%87%E7%BC%96/">汇编</a></span><span class="level-item">24 分钟读完 (大约3531个字)</span><span class="level-item" id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv">0</span>次访问</span></div></div><h1 class="title is-3 is-size-4-mobile">x86汇编学习笔记</h1><div class="content"><p>cbw：把AL扩充成AX，扩充时要考虑负数</p>
+<p>cwd：把AX扩充成DX:AX，扩充时要考虑负数</p>
+<p>cdq：把EAX扩充成EDX:EAX，扩充时要考虑负数</p>
+<p>一般用于放大被除数，为之后的除法做准备</p>
+<p><br><br></p>
+<p>movsx：符号扩充</p>
+<p>movzx：零扩充</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">movsx ax, al ;将al符号扩充成ax</span><br><span class="line">movzx ax, al ;将al零扩充成ax</span><br></pre></td></tr></table></figure>
+<p><br><br></p>
+<span id="more"></span>
+<p>rol: rotate left 循环左移</p>
+<p>把16位整数转化成16进制格式输出 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov ah, 9Ah</span><br><span class="line">rol ah, 1</span><br><span class="line">; 9A = 1001 1010 -&gt; 0011 0101</span><br></pre></td></tr></table></figure>
+<p><br><br></p>
+<p>通过下列方式可以使用32位寄存器</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">.386</span><br><span class="line">data degment use16</span><br><span class="line">data ends </span><br><span class="line"></span><br><span class="line">code segment use16 </span><br><span class="line">code ends</span><br></pre></td></tr></table></figure>
+<p><br><br></p>
+<p><strong>段首地址(5位16进制数)必须以0结尾</strong></p>
+<p><br><br></p>
+<p>0000:0000~9000:FFFF    dos操作系统及用户代码占用的内存空间，总共640K内存空间</p>
+<p>A000:0000~F000:FFFF    保留给显卡及ROM</p>
+<p><br><br></p>
+<p>显卡：text mode 与 graphic mode</p>
+<p>text mode：80*25</p>
+<p><br><br></p>
+<p>assume ds:data，编译器会把data替换成ds:</p>
+<p>若写成assume es:data，编译器则会把data替换成es:</p>
+<p>同一个段与多个寄存器有关联时：ds &gt; ss &gt; es &gt; cs</p>
+<p>如，若写成assume ds:data, es:data，则会将data替换成ds:</p>
+<p><br><br></p>
+<p>cs:ip和ss:sp会被操作系统初始化</p>
+<p><strong>四个段寄存器中只有cs无法通过mov来改变</strong></p>
+<p>ds和es也会被操作系统初始化，ds=es=首段地址-10h</p>
+<p>首段地址-10h:0000指向一块长度为100h字节的内存块，称为PSP(program segment prefix)，PSP是操作系统自动分配给正在运行的程序的，里面存放了命令行参数等信息</p>
+<p><br><br></p>
+<p><strong>图形模式编程</strong></p>
+<p>用int 10h把显卡切换到图形模式</p>
+<p>如若要切换到分辨率320*200，颜色为256色的图形模式：</p>
+<p>mov ah, 0h</p>
+<p>mov al, 13h </p>
+<p>int 10h </p>
+<p>例如：</p>
+<p>mov ax, 0a000h </p>
+<p>mov es, ax </p>
+<p>mov bx, 0</p>
+<p>mov byte ptr es:[bx], 4</p>
+<p>一个点只需要填一个字节</p>
+<p>(x, y)对应的显卡偏移地址=y*320+x，段地址=A000h</p>
+<p><br></p>
+<p>mov ah， 0</p>
+<p>int 16h </p>
+<p>能读取上下左右方向键，并且读取键盘时不回显</p>
+<p>mov ah, 1</p>
+<p>int 16h </p>
+<p>检测键盘缓冲区中有没有曾经按下的键，如果有则zf=0，没有则zf=1</p>
+<p>jz nokey </p>
+<p>mov ah, 0</p>
+<p>int 16h</p>
+<p>…</p>
+<p>nokey: </p>
+<p>继续刷新游戏画面</p>
+<p><br><br></p>
+<h4 id="堆栈段定义"><a href="#堆栈段定义" class="headerlink" title="堆栈段定义"></a>堆栈段定义</h4><p>stk segment stack </p>
+<p>db 200h dup(0)</p>
+<p>stk ends </p>
+<p>加上ss:stk</p>
+<p>当源代码中并没有定义堆栈段时，编译器会自动生成一个堆栈段，ss=首段的段地址，sp=0</p>
+<p><br><br></p>
+<h4 id="FLAG寄存器"><a href="#FLAG寄存器" class="headerlink" title="FLAG寄存器"></a>FLAG寄存器</h4><p>FL共16位，但只用其中9位，包括6个状态标志和3个控制标志</p>
+<p>15   14   13   12   11     10      9    8     7     6     5   4     3   2     1   0</p>
+<p>X     X      X     X     OF     DF     IF   TF   SF   ZF   X   AF   X   PF   X   CF</p>
+<p>0     0      0     0                                                    0           0          1</p>
+<p><strong>mov指令不会影响标志位的状态</strong></p>
+<ul>
+<li><p>CF：进位标志</p>
+<p>移位指令也会影响CF的值，最后移出去的那一位会自动保存到CF中</p>
+<ul>
+<li>jc 有进位则跳</li>
+<li>jnc 无进位则跳</li>
+<li>adc 带进位加</li>
+<li>clc CF=0</li>
+<li>stc CF=1</li>
+</ul>
+</li>
+<li><p>ZF：零标志</p>
+<p>结果为0时ZF=1</p>
+<p>jz==je     jnz==jne</p>
+<p>cmp ax, ax </p>
+<p>jz或je next会跳转到next</p>
+</li>
+<li><p>SF：运算结果的最高位</p>
+<p>mov ah, 7fh </p>
+<p>add ah, 1 ;AH=80h=10000000B, SF=1</p>
+<p>sub ah, 1 l;AH=7F=01111111B, SF=0</p>
+<p>js与jns</p>
+</li>
+<li><p>OF：溢出标志</p>
+<p>在补码规则下，正数加正数得到负数时，OF=1；或者负数加负数得到正数时，OF=1；减法同理</p>
+<p>jo与jno</p>
+</li>
+<li><p>PF：奇偶标志位</p>
+<p>统计第八位中1的个数，偶数为1，奇数为0</p>
+<p>jp/jpe与jnp/jpo</p>
+</li>
+<li><p>AF：辅助进位标志</p>
+<p>第四位向高四位产生进位或借位</p>
+<p>AF跟BCD码有关</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov al, 29h </span><br><span class="line">add al, 8 </span><br><span class="line">daa ;加法的十进制调整，这条指令会根据AF=1做AL=AL+6运算，使得AL=37h</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov al, 29h</span><br><span class="line">add al, 1 </span><br><span class="line">daa ;AL=AL+6=2AH+6=30h</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>DF：方向标志</p>
+<p>控制字符串运算的方向</p>
+<p>当DF=0时为正方向，当DF=1时是反方向</p>
+<p>cld：使DF=0</p>
+<p>std：使DF=1</p>
+<p>源首地址&lt;目标首地址时，复制按反方向</p>
+<p>源首地址&gt;目标首地址时，复制按正方向</p>
+<p>只有源地址快和目标地址快有部分重叠时，才需要注意复制的正方向与反方向</p>
+</li>
+<li><p>IF：中断标志</p>
+<p>IF=1时，允许硬件中断；IF=0时，禁止硬件中断</p>
+<p>cli：使IF=0</p>
+<p>sti：使IF=1</p>
+<p>软件中断：在代码中用int n形式来调用某个函数集中的子函数</p>
+<p>硬件中断：有硬件的某个事件触发，并由CPU自动插入并调用一个隐式的int n指令来调用某个中断服务子函数</p>
+</li>
+<li><p>TF：跟踪/陷阱标志</p>
+<p>当TF=1时，CPU会进入单步模式，CPU在每执行一条指令后，会自动在该条指令与下条指令之间插入一条int 1h指令并执行它</p>
+<p>当某条指令执行前TF=1，则该条指令执行后会自动执行int 1h单步中断 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">pushf ;push FL</span><br><span class="line">pop ax; AX=FL</span><br><span class="line">or ax, 100000000B; 或100h </span><br><span class="line">; and ax, not 100h; 或0FEFFh，把AX的第8位清零</span><br><span class="line">push ax </span><br><span class="line">popf ;TF=1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>jg，jl，jge，jle是符号数比较相关的跳转指令</p>
+<ul>
+<li>jg：jump if greater<ul>
+<li>SF == OF 且 ZF == 0</li>
+</ul>
+</li>
+<li>jge：SF == OF</li>
+<li>jl：SF != OF 不需要考虑ZF的状态</li>
+<li>jle：SF != OF || (SF == OF &amp;&amp; ZF == 1)</li>
+</ul>
+</li>
+<li><p>jcxz：当cx=0时跳转</p>
+</li>
+</ul>
+<p><br><br></p>
+<h4 id="端口"><a href="#端口" class="headerlink" title="端口"></a>端口</h4><p>端口地址范围：[0000h, 0FFFFh]，共65536个端口</p>
+<p>对端口操作使用指令in和out实现</p>
+<p>通过60h端口，CPU与键盘之间可以建立通讯</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">in al, 60h ;端口号&lt;=FFh时可之间用常数</span><br><span class="line">或者</span><br><span class="line">mov dx, 60h </span><br><span class="line">in al, dx </span><br><span class="line"></span><br><span class="line">out &lt;=FFh的常数, al </span><br><span class="line">或者</span><br><span class="line">out dx, al </span><br></pre></td></tr></table></figure>
+<p><br><br></p>
+<h4 id="32位间接寻址方式"><a href="#32位间接寻址方式" class="headerlink" title="32位间接寻址方式"></a>32位间接寻址方式</h4><ol>
+<li><p>32位比16位多了以下这种寻址方式：</p>
+<p>[寄存器+寄存器*n+常数]</p>
+<p>其中n=2、4、8</p>
+<p>如mov eax, [ebx+esi*4]</p>
+</li>
+<li><p>16位中只有4个寄存器可以用来放在[]内：[bx] [bp] [si] [di]</p>
+<p>32位中对[]中的两个寄存器几乎不加限制</p>
+</li>
+</ol>
+<p><br><br></p>
+<h4 id="xchg"><a href="#xchg" class="headerlink" title="xchg"></a>xchg</h4><p>用于交换两个寄存器之间的值</p>
+<p>或者交换寄存器和地址之间的值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mov ax, 1 </span><br><span class="line">mov bx, 2</span><br><span class="line">xchg ax, bx ;则ax=2, bx=1</span><br><span class="line">xchg ax, ds[bx]</span><br></pre></td></tr></table></figure>
+<p><br><br></p>
+<h4 id="乘法指令：mul"><a href="#乘法指令：mul" class="headerlink" title="乘法指令：mul"></a>乘法指令：mul</h4><ul>
+<li><p>8位乘法：被乘数为AL，乘积为AX</p>
+<ul>
+<li>mul bh表示AX=AL*BH</li>
+<li>mul后面所跟的操作数必须是8位寄存器或8位变量，<strong>不能是常数</strong></li>
+</ul>
+</li>
+<li><p>16位乘法：被乘数为AX，乘积为DX:AX</p>
+<ul>
+<li>mul bx表示DX:AX=AX*BX</li>
+</ul>
+</li>
+<li><p>32位乘法：被乘数为EAX，乘积为EDX:EAX</p>
+<ul>
+<li>mul ebx表示EDX:EAX=EAX*EBX</li>
+</ul>
+</li>
+<li><p>带符号乘法为imul</p>
+<ul>
+<li>第一类用法跟mul指令一样</li>
+</ul>
+</li>
+<li><p>mul及imul的第二类用法可以包含2个或3个操作数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">①mul eax, ebx ; eax=eax*ebx</span><br><span class="line">②imul eax, ebx, 3 ;eax=ebx*3</span><br></pre></td></tr></table></figure>
+<ul>
+<li>①②中的第2个操作数可以是寄存器也可以是变量</li>
+<li>②中的第3个操作数只能是常数</li>
+</ul>
+</li>
+</ul>
+<p><br><br></p>
+<h4 id="除法指令：div"><a href="#除法指令：div" class="headerlink" title="除法指令：div"></a>除法指令：div</h4><ul>
+<li>16位除以8位得8位<ul>
+<li>ax为被除数，al为商，ah为余数</li>
+<li>ax / 除数 = AL…AH</li>
+</ul>
+</li>
+<li>32位除以16位得16位<ul>
+<li>dx:ax / 除数 = ax…dx </li>
+</ul>
+</li>
+<li><p>64位除以32位得32位</p>
+<ul>
+<li>edx:eax / 除数 = eax…edx</li>
+</ul>
+</li>
+<li><p>idiv：带符号除法</p>
+</li>
+</ul>
+<p><br><br></p>
+<h4 id="地址传送指令：lea-lds-les"><a href="#地址传送指令：lea-lds-les" class="headerlink" title="地址传送指令：lea lds les"></a>地址传送指令：lea lds les</h4><ul>
+<li><p>lea 取变量的编译地址</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">lea dx, ds[bx+si+3] ;dx=bx+si+3</span><br><span class="line">mov dx, bx+si+3 ;语法错误！</span><br><span class="line"></span><br><span class="line">lea eax, [eax+eax*4] ;eax=eax*5 用lea做乘法</span><br></pre></td></tr></table></figure>
+<p>[]中*后所跟的数只能是2的n次方</p>
+</li>
+<li><p>远指针</p>
+<ul>
+<li>近指针：某个变量的偏移地址</li>
+<li>远指针：某个变量的段地址和偏移地址</li>
+<li>C语言中的指针都为近指针</li>
+<li>les di, dword ptr ds:[bx] 取出ds:[bx]处的32位，高16位在es，低16位在di</li>
+<li>lds si, dword ptr ds:[bx] 与les类似，但高16位在ds，低16位在si  </li>
+<li>fword ptr 特指48位宽度的变量</li>
+</ul>
+</li>
+</ul>
+<p><br><br></p>
+<p><strong>换码指令</strong>：在xlat执行前必须让ds:bx指向表，al必须赋值为数组的下标。执行xlat后，al=ds:[bx+al]</p>
+<p>inc和dec不改变CF位</p>
+<p>adc带进位加法</p>
+<p>sbb带借位减法</p>
+<p>neg ax ;即求ax=-ax</p>
+<p><br><br></p>
+<h4 id="小数运算"><a href="#小数运算" class="headerlink" title="小数运算"></a>小数运算</h4><p>fadd fsub fmul fdiv 小数的运算</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pi dd 3.14; 32位小数，相当于float</span><br><span class="line">r dq 3.14159; 64位小数，相当于double</span><br><span class="line">s dt 3.1415926 ;80位小数，相当于long double</span><br></pre></td></tr></table></figure>
+<p>CPU内部一共有8个小数寄存器，分别叫做st(0) st(1) st(2) … st(7)</p>
+<p>其中st(0)可以简写成st</p>
+<p>这八个寄存器的宽度都为80位</p>
+<p><strong>在载入数据时</strong>，先载入的值比如3.14进入st(0)后，再载入的值比如2.0并不是进入st(1)，而是先把st(0)中的3.14存到st(1)中，再将2.0载入st(0)中</p>
+<p><strong>fld [a]</strong>：将[a]中值载入st中</p>
+<p><strong>fstp [a]</strong>：将st(0)中的内容取到[a]中，然后将st(0)<strong>弹出</strong>（st[1]中的内容会移动到st[0]中）</p>
+<p>fstp st(0)会将st(0)中的内容清空</p>
+<p>每一个小数运算之前都会自动插入一条wait指令</p>
+<p><strong>fild [a]</strong>：将a中的整数值当作小数载入到st中</p>
+<p><br><br></p>
+<h4 id="逻辑运算指令"><a href="#逻辑运算指令" class="headerlink" title="逻辑运算指令"></a>逻辑运算指令</h4><p>AND，OR，XOR，NOT，TEST</p>
+<p>test ax, 8000h ;将即做ax&amp;8000h，但不保存结果，只改变标志寄存器的值</p>
+<p><br><br></p>
+<h4 id="移位指令"><a href="#移位指令" class="headerlink" title="移位指令"></a>移位指令</h4><p>shl, shr, sal, sar, rol, ror, rcl, rcr</p>
+<p>移出去的位都会放到CF中</p>
+<p>sal是算术左移</p>
+<p>sar为算术右移</p>
+<p>shl为逻辑左移</p>
+<p>shr为逻辑右移</p>
+<p>算术左移(sal)及算术右移(sar)的对象是符号数</p>
+<p>逻辑左移(shl)及逻辑右移(shr)的对象是非符号数</p>
+<p>rcl：带进位循环左移</p>
+<p>rcr：带进位循环右移</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">mov ah, 0b6h </span><br><span class="line">stc ;CF=1</span><br><span class="line">rcl ah, 1 ;CF=1, ah = 1011 0110 移位前</span><br><span class="line">		  ;CF=1, ah = 0110 1101 移位后</span><br><span class="line">		  ;即把CF和ah当作9个位一起循环转</span><br><span class="line"></span><br><span class="line">mov ah, 0b6h</span><br><span class="line">stc ;CF=1</span><br><span class="line">rcr ah, 1 ;AH = 1011 0110, CF=1 移位前</span><br><span class="line">		  ;AH = 1101 1011, CF=0 移位后</span><br></pre></td></tr></table></figure>
+<p><br><br></p>
+<h4 id="字符串复制指令"><a href="#字符串复制指令" class="headerlink" title="字符串复制指令"></a>字符串复制指令</h4><h5 id="movsb"><a href="#movsb" class="headerlink" title="movsb"></a>movsb</h5><p>rep movsb原理如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">again:</span><br><span class="line"><span class="keyword">if</span> (cx == <span class="number">0</span>) <span class="keyword">goto</span> done;</span><br><span class="line">byte ptr es:[di] = byte ptr ds:[si]</span><br><span class="line"><span class="keyword">if</span> (df == <span class="number">0</span>) &#123;si ++; di ++;&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;si --; di --;&#125;</span><br><span class="line">cx --;</span><br><span class="line"><span class="keyword">goto</span> again</span><br><span class="line">done:</span><br></pre></td></tr></table></figure>
+<p>单独的movsb指令所做的操作如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">byte ptr es:[di] = byte ptr ds:[si]</span><br><span class="line"><span class="keyword">if</span> (df == <span class="number">0</span>) &#123;si ++; di ++;&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;si --; di --;&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="movsw"><a href="#movsw" class="headerlink" title="movsw"></a>movsw</h5><p>rep movsw原理如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">again:</span><br><span class="line"><span class="keyword">if</span> (cx == <span class="number">0</span>) <span class="keyword">goto</span> done;</span><br><span class="line">word ptr es:[di] = word ptr ds:[si] </span><br><span class="line"><span class="keyword">if</span> (df == <span class="number">0</span>) &#123;si += <span class="number">2</span>; di += <span class="number">2</span>;&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;si -= <span class="number">2</span>; di -= <span class="number">2</span>;&#125; </span><br><span class="line">cx --;</span><br><span class="line"><span class="keyword">goto</span> again</span><br><span class="line">done:</span><br></pre></td></tr></table></figure>
+<p>单独的movsw指令与movsb指令类似</p>
+<h5 id="movsd"><a href="#movsd" class="headerlink" title="movsd"></a>movsd</h5><p>rep movsd原理如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">again:</span><br><span class="line"><span class="keyword">if</span> (cx == <span class="number">0</span>) <span class="keyword">goto</span> done;</span><br><span class="line">dword ptr es:[di] = dword ptr ds:[si] </span><br><span class="line"><span class="keyword">if</span> (df == <span class="number">0</span>) &#123;si += <span class="number">4</span>; di += <span class="number">4</span>;&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;si -= <span class="number">4</span>; di -= <span class="number">4</span>;&#125; </span><br><span class="line">cx --;</span><br><span class="line"><span class="keyword">goto</span> again</span><br><span class="line">done:</span><br></pre></td></tr></table></figure>
+<p>单独的movsd指令与movsb类似</p>
+<h5 id="32位系统"><a href="#32位系统" class="headerlink" title="32位系统"></a>32位系统</h5><p>在32位系统中，为ds:esi与es:edi</p>
+<p><br><br></p>
+<h4 id="字符串比较指令：cmpsb-cmpsw-cmpsd"><a href="#字符串比较指令：cmpsb-cmpsw-cmpsd" class="headerlink" title="字符串比较指令：cmpsb, cmpsw, cmpsd"></a>字符串比较指令：cmpsb, cmpsw, cmpsd</h4><p>cmpsb：</p>
+<p>比较byte ptr ds:[si]与byte ptr es:[di]</p>
+<p>当df=0时,si++,di++</p>
+<p>当df=1时,si—,di—</p>
+<p>rep cmpsb：连续进行比较</p>
+<p>repe cmpsb：若本次相等则继续比较下一个</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">again:</span><br><span class="line"><span class="keyword">if</span> (cx == <span class="number">0</span>) <span class="keyword">goto</span> done;</span><br><span class="line"><span class="keyword">if</span> (df == <span class="number">0</span>) &#123;si ++; di ++;&#125;</span><br><span class="line"><span class="keyword">else</span> &#123;si --; di --;&#125; </span><br><span class="line">cx --;</span><br><span class="line">若本次相等,则<span class="keyword">goto</span> done</span><br><span class="line">done:</span><br></pre></td></tr></table></figure>
+<p>repne cmpsb：若本次不想等则继续比较下一个</p>
+<p><strong>可以根据zf=1推出两个字符串全等</strong></p>
+<p><strong>可以根据zf=0推出两个字符串全不等</strong></p>
+<p>cmpsw和cmpsd同理</p>
+<p><br><br></p>
+<h4 id="字符串扫描指令：scasb-scasw-scasd"><a href="#字符串扫描指令：scasb-scasw-scasd" class="headerlink" title="字符串扫描指令：scasb, scasw, scasd"></a>字符串扫描指令：scasb, scasw, scasd</h4><p>scasb：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cmp al, es:[di] </span><br><span class="line">di++; 当df=1时，为di--</span><br></pre></td></tr></table></figure>
+<p>repne scasb：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">next:</span><br><span class="line"><span class="keyword">if</span> (cx == <span class="number">0</span>) <span class="keyword">goto</span> done;</span><br><span class="line">cmp al, es[di]</span><br><span class="line">di++; 当df=<span class="number">1</span>时,为di--</span><br><span class="line">cx--;</span><br><span class="line">je done</span><br><span class="line"><span class="keyword">goto</span> next </span><br><span class="line">done:</span><br></pre></td></tr></table></figure>
+<p>repe scasb：相等则进行下一次扫描</p>
+<p><br><br></p>
+<h4 id="字符串操作指令：stosb-lodsb"><a href="#字符串操作指令：stosb-lodsb" class="headerlink" title="字符串操作指令：stosb, lodsb"></a>字符串操作指令：stosb, lodsb</h4><p>stosb：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">es[di] = al </span><br><span class="line">di ++;</span><br></pre></td></tr></table></figure>
+<p>rep stosb：循环cx次stosb</p>
+<p>stosw：储存ax </p>
+<p>stosd：储存eax</p>
+<p><br></p>
+<p>lodsb：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">al = ds:[si]</span><br><span class="line">si ++;</span><br></pre></td></tr></table></figure>
+<p><strong>lodsb通常没有rep前缀</strong></p>
+<p>lodsw：取出ax </p>
+<p>lodsd：取出eax</p>
+<p><br><br></p>
+<h4 id="控制转移指令：jmp-call-int"><a href="#控制转移指令：jmp-call-int" class="headerlink" title="控制转移指令：jmp, call, int"></a>控制转移指令：jmp, call, int</h4><p>byte ptr </p>
+<p>word ptr </p>
+<p>dword ptr </p>
+<p>fword ptr</p>
+<p>qword ptr </p>
+<p>tbyte ptr</p>
+<p><strong>短跳指令：</strong>机器码由2字节构成</p>
+<p>第1个字节=EB，第二个字节=<strong>目标地址-下调指令的偏移地址</strong></p>
+<p><strong>所有条件跳转都是近跳</strong></p>
+<ul>
+<li>call 近跳，仅push ip，返回用ret</li>
+<li>call dword ptr，远跳，push cs, push ip，返回用retf</li>
+<li>int，远眺，pushf, push cs, push ip，返回用iret </li>
+</ul>
+<p><br><br></p>
+<h4 id="汇编语言中的三种参数传递方式"><a href="#汇编语言中的三种参数传递方式" class="headerlink" title="汇编语言中的三种参数传递方式"></a>汇编语言中的三种参数传递方式</h4><ol>
+<li><p>寄存器传递</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">f:</span><br><span class="line">	add ax, ax </span><br><span class="line">	ret </span><br><span class="line">main: </span><br><span class="line">	mov ax, 3 </span><br><span class="line">	call f </span><br></pre></td></tr></table></figure>
+</li>
+<li><p>变量传递</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">f:</span><br><span class="line">	mov ax, var </span><br><span class="line">	add ax, ax </span><br><span class="line">	ret </span><br><span class="line">main:</span><br><span class="line">	mov var, 3 </span><br><span class="line">	call f </span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><strong>寄存器传递可以多线程，因为操作系统在进行多线程时会自动保存寄存器的值</strong></p>
+<p><strong>变量传递不支持多线程</strong></p>
+<ol>
+<li><p>构造堆栈结构</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">f:</span><br><span class="line">	push bp </span><br><span class="line">	mov bp, sp </span><br><span class="line">	mov ax, [bp + 4] </span><br><span class="line">	add ax, ax </span><br><span class="line">	pop bp </span><br><span class="line">	ret </span><br><span class="line">main:</span><br><span class="line">	mov ax, 3 </span><br><span class="line">	push ax </span><br><span class="line">	call f</span><br><span class="line">back:</span><br><span class="line">	add sp, 2 </span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><br><br></p>
+<h4 id="动态变量的构造"><a href="#动态变量的构造" class="headerlink" title="动态变量的构造"></a>动态变量的构造</h4><p>将如下c语言函数转化成汇编：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">f</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span> &#123;</span><br><span class="line">	<span class="type">int</span> c; </span><br><span class="line">	c = a + b; </span><br><span class="line">	<span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">f:</span><br><span class="line">	push bp </span><br><span class="line">	mov bp, sp </span><br><span class="line">	sub sp, 2 </span><br><span class="line">	mov ax, [bp + 4]</span><br><span class="line">	add ax, [bp + 6]</span><br><span class="line">	mov [bp - 2], ax </span><br><span class="line">	mov ax, [bp - 2] </span><br><span class="line">	mov sp, bp </span><br><span class="line">	pop bp </span><br><span class="line">	ret </span><br><span class="line">main:</span><br><span class="line">	mov ax, 20 </span><br><span class="line">	push ax </span><br><span class="line">	mov ax, 10</span><br><span class="line">	push ax </span><br><span class="line">	call f </span><br><span class="line">back:</span><br><span class="line">	add sp, 4 </span><br></pre></td></tr></table></figure>
+<p>C语言函数中需要保护bp, bx, si, di（32位为ebp, ebx, esi, edi）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">f: </span><br><span class="line">	push bp </span><br><span class="line">	mov bp, sp </span><br><span class="line">	sub sp, n ;其中n一个常数，用来为动态变量分配空间</span><br><span class="line">	push bx </span><br><span class="line">	push si </span><br><span class="line">	push di </span><br><span class="line">	...</span><br><span class="line">	pop di </span><br><span class="line">	pop si </span><br><span class="line">	pop bx </span><br><span class="line">	mov sp, bp </span><br><span class="line">	pop bp </span><br><span class="line">	ret </span><br></pre></td></tr></table></figure>
+<p>32位以上的cpu允许[esp+n]或[esp-n]来引用堆栈中的内容</p>
+<p><br><br></p>
+<h4 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">f</span><span class="params">(<span class="type">int</span> n)</span> &#123;</span><br><span class="line">	<span class="keyword">if</span> (n == <span class="number">1</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">return</span> n + f(n - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上述C语言递归函数可翻译成以下汇编代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">f:</span><br><span class="line">	push bp </span><br><span class="line">	mov bp, sp </span><br><span class="line">	mov ax, [bp + 4]</span><br><span class="line">	cmp ax, 1 </span><br><span class="line">	je done </span><br><span class="line">	dec ax </span><br><span class="line">	push ax </span><br><span class="line">	call f </span><br><span class="line">there:</span><br><span class="line">	add sp, 2 </span><br><span class="line">	add ax, [bp + 4] </span><br><span class="line">done: </span><br><span class="line">	pop bp </span><br><span class="line">	ret </span><br><span class="line">main:</span><br><span class="line">	mov ax, 3 </span><br><span class="line">	push ax </span><br><span class="line">	call f </span><br><span class="line">here:</span><br><span class="line">	add sp, 2 </span><br></pre></td></tr></table></figure>
+<p><br><br></p>
+<h4 id="结束程序运行但保留内存块"><a href="#结束程序运行但保留内存块" class="headerlink" title="结束程序运行但保留内存块"></a>结束程序运行但保留内存块</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mov dx, 内存块的长度</span><br><span class="line">mov ah, 31h </span><br><span class="line">int 21h </span><br></pre></td></tr></table></figure>
+<p>PSP：在code段之前，100字节，由操作系统自动分配</p>
+<p>调用int 21h/ah=3h功能时，需要把PSP的占用的空间长度也计算到当前程序占用的内存块长度中</p>
+<p>dx = ((100h + code段的长度) + 0fh ) / 10h </p>
+<p>除以10h是因为长度单位为节(1节=10h字节)</p>
+<p>加上0fh是考虑到code段长度无法被10h整除</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">final label byte </span><br><span class="line">相当于final是一个db类型的变量，但没有分配内存</span><br><span class="line">之后可用offset final表示程序结束位置的偏移地址</span><br></pre></td></tr></table></figure>
+<p><br><br></p>
+<h4 id="int、iret"><a href="#int、iret" class="headerlink" title="int、iret"></a>int、iret</h4><p>中断指令格式：int n； 其中n的范围是[0, 0FFh]</p>
+<p><br></p>
+<p><br></p>
+<p><br></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>x86汇编学习笔记</p><p><a href="https://gax-c.github.io/2022/07/28/8_x86masm/">https://gax-c.github.io/2022/07/28/8_x86masm/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>作者</h6><p>Gax</p></div></div><div class="level-item is-narrow"><div><h6>发布于</h6><p>2022-07-28</p></div></div><div class="level-item is-narrow"><div><h6>更新于</h6><p>2022-07-28</p></div></div><div class="level-item is-narrow"><div><h6>许可协议</h6><p><a class="icons" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="icon fab fa-creative-commons"></i></a><a class="icons" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="icon fab fa-creative-commons-by"></i></a><a class="icons" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="icon fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/%E6%B1%87%E7%BC%96/">汇编</a></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=620a6bde9343fb0019ed0d89&amp;product=inline-share-buttons" defer></script></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2022/02/27/6_ita_1/"><span class="level-item">《算法导论》ITA（一）归并排序</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">评论</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://gax-c.github.io/2022/07/28/8_x86masm/';
+            this.page.identifier = '2022/07/28/8_x86masm/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'gaxs-blog' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">目录</h3><ul class="menu-list"><li><a class="level is-mobile" href="#堆栈段定义"><span class="level-left"><span class="level-item">1</span><span class="level-item">堆栈段定义</span></span></a></li><li><a class="level is-mobile" href="#FLAG寄存器"><span class="level-left"><span class="level-item">2</span><span class="level-item">FLAG寄存器</span></span></a></li><li><a class="level is-mobile" href="#端口"><span class="level-left"><span class="level-item">3</span><span class="level-item">端口</span></span></a></li><li><a class="level is-mobile" href="#32位间接寻址方式"><span class="level-left"><span class="level-item">4</span><span class="level-item">32位间接寻址方式</span></span></a></li><li><a class="level is-mobile" href="#xchg"><span class="level-left"><span class="level-item">5</span><span class="level-item">xchg</span></span></a></li><li><a class="level is-mobile" href="#乘法指令：mul"><span class="level-left"><span class="level-item">6</span><span class="level-item">乘法指令：mul</span></span></a></li><li><a class="level is-mobile" href="#除法指令：div"><span class="level-left"><span class="level-item">7</span><span class="level-item">除法指令：div</span></span></a></li><li><a class="level is-mobile" href="#地址传送指令：lea-lds-les"><span class="level-left"><span class="level-item">8</span><span class="level-item">地址传送指令：lea lds les</span></span></a></li><li><a class="level is-mobile" href="#小数运算"><span class="level-left"><span class="level-item">9</span><span class="level-item">小数运算</span></span></a></li><li><a class="level is-mobile" href="#逻辑运算指令"><span class="level-left"><span class="level-item">10</span><span class="level-item">逻辑运算指令</span></span></a></li><li><a class="level is-mobile" href="#移位指令"><span class="level-left"><span class="level-item">11</span><span class="level-item">移位指令</span></span></a></li><li><a class="level is-mobile" href="#字符串复制指令"><span class="level-left"><span class="level-item">12</span><span class="level-item">字符串复制指令</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#movsb"><span class="level-left"><span class="level-item">12.1</span><span class="level-item">movsb</span></span></a></li><li><a class="level is-mobile" href="#movsw"><span class="level-left"><span class="level-item">12.2</span><span class="level-item">movsw</span></span></a></li><li><a class="level is-mobile" href="#movsd"><span class="level-left"><span class="level-item">12.3</span><span class="level-item">movsd</span></span></a></li><li><a class="level is-mobile" href="#32位系统"><span class="level-left"><span class="level-item">12.4</span><span class="level-item">32位系统</span></span></a></li></ul></li><li><a class="level is-mobile" href="#字符串比较指令：cmpsb-cmpsw-cmpsd"><span class="level-left"><span class="level-item">13</span><span class="level-item">字符串比较指令：cmpsb, cmpsw, cmpsd</span></span></a></li><li><a class="level is-mobile" href="#字符串扫描指令：scasb-scasw-scasd"><span class="level-left"><span class="level-item">14</span><span class="level-item">字符串扫描指令：scasb, scasw, scasd</span></span></a></li><li><a class="level is-mobile" href="#字符串操作指令：stosb-lodsb"><span class="level-left"><span class="level-item">15</span><span class="level-item">字符串操作指令：stosb, lodsb</span></span></a></li><li><a class="level is-mobile" href="#控制转移指令：jmp-call-int"><span class="level-left"><span class="level-item">16</span><span class="level-item">控制转移指令：jmp, call, int</span></span></a></li><li><a class="level is-mobile" href="#汇编语言中的三种参数传递方式"><span class="level-left"><span class="level-item">17</span><span class="level-item">汇编语言中的三种参数传递方式</span></span></a></li><li><a class="level is-mobile" href="#动态变量的构造"><span class="level-left"><span class="level-item">18</span><span class="level-item">动态变量的构造</span></span></a></li><li><a class="level is-mobile" href="#递归"><span class="level-left"><span class="level-item">19</span><span class="level-item">递归</span></span></a></li><li><a class="level is-mobile" href="#结束程序运行但保留内存块"><span class="level-left"><span class="level-item">20</span><span class="level-item">结束程序运行但保留内存块</span></span></a></li><li><a class="level is-mobile" href="#int、iret"><span class="level-left"><span class="level-item">21</span><span class="level-item">int、iret</span></span></a></li></ul></div></div><style>#toc .menu-list > li > a.is-active + .menu-list { display: block; }#toc .menu-list > li > a + .menu-list { display: none; }</style><script src="/js/toc.js" defer></script></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/img/logo.png" alt="Gax&#039;s Blog" height="28"></a><p class="is-size-7"><span>&copy; 2022 Gax</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a><br><span id="busuanzi_container_site_uv">共<span id="busuanzi_value_site_uv">0</span>个访客</span></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Gax-c/Gax-c.github.io"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script>moment.locale("zh-CN");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: 'unfolded'
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="回到顶端" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/cookieconsent@3.1.1/build/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "此网站使用Cookie来改善您的体验。",
+          dismiss: "知道了！",
+          allow: "允许使用Cookie",
+          deny: "拒绝",
+          link: "了解更多",
+          policy: "Cookie政策",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.10.0/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.8.1/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><script type="text/x-mathjax-config">MathJax.Hub.Config({
+            'HTML-CSS': {
+                matchFontHeight: false
+            },
+            SVG: {
+                matchFontHeight: false
+            },
+            CommonHTML: {
+                matchFontHeight: false
+            },
+            tex2jax: {
+                inlineMath: [
+                    ['$','$'],
+                    ['\\(','\\)']
+                ]
+            }
+        });</script><script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.9/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="想要查找什么..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"想要查找什么...","untitled":"(无标题)","posts":"文章","pages":"页面","categories":"分类","tags":"标签"});
+        });</script></body></html>
