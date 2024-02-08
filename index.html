@@ -33,51 +33,14 @@
 <li><a target="_blank" rel="noopener" href="https://cseweb.ucsd.edu//~wgg/CSE210/howtoread.html">“How to Read an Engineering Research Paper”, by William Griswold</a></li>
 </ul>
 <p>You can refer to the links above to get some general ideas (these links were copied from Lingming Zhang’s slides of cs527-s23). </p>
-<p>According to William Griswold, try to answer the problem below: </p></div><a class="article-more button is-small is-size-7" href="/2023/10/24/9_how_to_read_paper/#more">Read more</a></article></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2024/02/06/35_paper_review_23/"><img class="fill" src="/images/35/cover.png" alt="[Review] How Good Are the Specs? A Study of the Bug-Finding Effectiveness of Existing Java API Specifications"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2024-02-06T09:24:33.000Z" title="2024/2/6 17:24:33">2024-02-06</time></span><span class="level-item">Updated&nbsp;<time dateTime="2024-02-08T05:56:40.421Z" title="2024/2/8 13:56:40">2024-02-08</time></span><span class="level-item"><a class="link-muted" href="/categories/Paper-Review/">Paper Review</a></span><span class="level-item">3 minutes read (About 438 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2024/02/06/35_paper_review_23/">[Review] How Good Are the Specs? A Study of the Bug-Finding Effectiveness of Existing Java API Specifications</a></h1><div class="content"><p><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/2970276.2970356">Link here</a></p>
+<p>According to William Griswold, try to answer the problem below: </p></div><a class="article-more button is-small is-size-7" href="/2023/10/24/9_how_to_read_paper/#more">Read more</a></article></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2024/02/06/35_paper_review_23/"><img class="fill" src="/images/35/cover.png" alt="[Review] How Good Are the Specs? A Study of the Bug-Finding Effectiveness of Existing Java API Specifications"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2024-02-06T09:24:33.000Z" title="2024/2/6 17:24:33">2024-02-06</time></span><span class="level-item">Updated&nbsp;<time dateTime="2024-02-08T06:00:37.458Z" title="2024/2/8 14:00:37">2024-02-08</time></span><span class="level-item"><a class="link-muted" href="/categories/Paper-Review/">Paper Review</a></span><span class="level-item">3 minutes read (About 439 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2024/02/06/35_paper_review_23/">[Review] How Good Are the Specs? A Study of the Bug-Finding Effectiveness of Existing Java API Specifications</a></h1><div class="content"><p><a target="_blank" rel="noopener" href="https://dl.acm.org/doi/abs/10.1145/2970276.2970356">Link here</a></p>
 <p>The paper is a evaluation, which assesses the current runtime verification technology, and mainly the effectiveness of the existing API specifications. </p>
 <p>Three conclusions: </p>
 <ol>
 <li>Current RV technology has matured enough with tolerable runtime overhead. </li>
 <li>Existing API specification can find many bugs that developers are willing to fix. </li>
 <li>The false alarm rates are quite high due to the ineffective specifications. </li>
-</ol>
-<p><strong>Introduction</strong> </p>
-<p>specification: a way to use an API as asserted by the developer or analyst, and which encodes information about the behavior of a program when an API is used. </p>
-<p>In RV, the execution of a software system is dynamically checked against formal specifications. The program is monitored, and while there are violations, they will be captured. </p>
-<p><img src="1.png" alt></p>
-<p><strong>Experiment</strong></p>
-<p>Set up: </p>
-<ul>
-<li>199 specs(182 manually written, 17 automatically mined) and 200 open-source projects(used Maven, had at least one test, had all tests pass without monitoring, had all tests pass when monitoring with JavaMOP). </li>
-<li>Environment: Intel i7-3770K CPU @ 3.50GHz processor and 32GB of RAM running Ubuntu 14.04.4 LTS and Java 7 or 8. </li>
-<li>For manually written specs: written by Lee et al., selected from else where. </li>
-<li>For automatically mined specs: Paper Search -&gt; Paper Filtering -&gt; Email Authors =&gt; 17 papers related. </li>
-<li>Tests generation: Randoop. </li>
-</ul>
-<p>The violations are divided into two groups: <em>dynamic violations (DV)</em> and <em>static violations (SV)</em>. Cause some same violations may be triggered for several times, so for different DVs may be grouped into one single SV. </p>
-<p>The violations are classified as: </p>
-<ol>
-<li>TrueBug: A potential bug to be confirmed by reporting to the developers or by checking if it was already fixed. </li>
-<li>FalseAlarm: The violation does not indicate a bug in the code but effectively a bug/imprecision in the spec. </li>
-<li>HardToInspect: The violation is hard to classify as a TrueBug or a FalseAlarm, because source code is missing or is particularly hard to reason about.</li>
-</ol>
-<p>The false alarm rate (FAR) will then be calculated. </p>
-<p><strong>Results</strong></p>
-<ul>
-<li>The FARs are high, reaching more than 80%. </li>
-<li>The similar FARs across all these dimensions suggests that the FARs are mostly due to inherent (in)effectiveness of the specs and less due to specific code-related factors.</li>
-<li>Violations in libraries are somewhat more likely to be false alarms, as one would expect that libraries are indeed better tested and have fewer bugs than the project code.</li>
-<li>Existing specs are rather ineffective for finding bugs, because they raise too many false alarms.</li>
-</ul>
-<p><strong>Future works</strong></p>
-<ol>
-<li>Better technologies for specification generation. Maybe try LLMs. </li>
-<li>Better automatic specification mining technologies. </li>
-<li>Automated filtering of specs and false alarms. Or try to decease the false alarms from the code side(a plugin for preventing potential false alarm code problems). </li>
-</ol>
-<p><br></p>
-<p><br></p>
-</div></article></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2023/12/28/34_leetcode_2/"><img class="fill" src="/images/34/cover.png" alt="[LeetCode] 1531. String Compression II"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2023-12-28T03:54:23.000Z" title="2023/12/28 11:54:23">2023-12-28</time></span><span class="level-item">Updated&nbsp;<time dateTime="2023-12-28T04:15:24.824Z" title="2023/12/28 12:15:24">2023-12-28</time></span><span class="level-item"><a class="link-muted" href="/categories/LeetCode/">LeetCode</a></span><span class="level-item">2 minutes read (About 245 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/12/28/34_leetcode_2/">[LeetCode] 1531. String Compression II</a></h1><div class="content"><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/string-compression-ii/description/?envType=daily-question&amp;envId=2023-12-28">Link here</a></p>
+</ol></div><a class="article-more button is-small is-size-7" href="/2024/02/06/35_paper_review_23/#more">Read more</a></article></div><div class="card"><div class="card-image"><a class="image is-7by3" href="/2023/12/28/34_leetcode_2/"><img class="fill" src="/images/34/cover.png" alt="[LeetCode] 1531. String Compression II"></a></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2023-12-28T03:54:23.000Z" title="2023/12/28 11:54:23">2023-12-28</time></span><span class="level-item">Updated&nbsp;<time dateTime="2023-12-28T04:15:24.824Z" title="2023/12/28 12:15:24">2023-12-28</time></span><span class="level-item"><a class="link-muted" href="/categories/LeetCode/">LeetCode</a></span><span class="level-item">2 minutes read (About 245 words)</span></div></div><h1 class="title is-3 is-size-4-mobile"><a class="link-muted" href="/2023/12/28/34_leetcode_2/">[LeetCode] 1531. String Compression II</a></h1><div class="content"><p><a target="_blank" rel="noopener" href="https://leetcode.com/problems/string-compression-ii/description/?envType=daily-question&amp;envId=2023-12-28">Link here</a></p>
 <p>I thought it should be Greedy at first, but was stuck in Example 2. Then, I considered about DP, but found it hard to figure out how to build the larger solution from the sub-problem. </p>
 <p>So, another time I reached out for solution. </p>
 <p>We use dp[i][j] to represent the minimum length of the first i letters after compression and after j deletions. </p>
