@@ -1,3 +1,3 @@
 Personal Homepage of **Zichen Xie**.
 
-Generated from: [https://alshedivat.github.io/al-folio/](https://alshedivat.github.io/al-folio/).
+Generated from: [https://github.com/alshedivat/al-folio](https://github.com/alshedivat/al-folio).
