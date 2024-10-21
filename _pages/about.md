@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: Zhejiang University. Senior Student. # <a href='https://www.zju.edu.cn/english/'>Zhejiang University</a>
+subtitle: zichenxie0106@gmail.com # <a href='https://www.zju.edu.cn/english/'>Zhejiang University</a>
 
 profile:
   align: right
