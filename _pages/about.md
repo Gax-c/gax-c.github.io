@@ -19,10 +19,10 @@ internships: true
 social: true # includes social icons at the bottom of the picture
 ---
 
-I am a senior undergraduate student at [Zhejiang University (ZJU)](https://www.zju.edu.cn/english/), currently applying for a **PhD position for 25fall**. Now, I am conducting research as an intern  at the [University of Illinois Urbana-Champaign (UIUC)](https://siebelschool.illinois.edu/), under the supervision of [Professor Lingming Zhang](https://lingming.cs.illinois.edu/). Additionally, I serve as a research assistant in the [NESA Lab](https://nesa.zju.edu.cn/index.html) at Zhejiang University, advised by [Professor Shouling Ji](https://scholar.google.com/citations?user=5HoF_9oAAAAJ&hl=en&oi=ao). 
+I am a senior undergraduate student at [Zhejiang University (ZJU)](https://www.zju.edu.cn/english/), currently applying for a **PhD position for Fall 2025**. Now, I am conducting research as an intern  at the [University of Illinois Urbana-Champaign (UIUC)](https://siebelschool.illinois.edu/), under the supervision of [Professor Lingming Zhang](https://lingming.cs.illinois.edu/). Additionally, I serve as a research assistant in the [NESA Lab](https://nesa.zju.edu.cn/index.html) at Zhejiang University, advised by [Professor Shouling Ji](https://scholar.google.com/citations?user=5HoF_9oAAAAJ&hl=en&oi=ao). 
 
 I am a member of ACEE (Advanced Honor Class for Engineering Education) in [Chu Kochen Honors College](http://ckc.zju.edu.cn/ckcen/main.htm).
 
-My research interests lie in the areas of **Software Engineering**, **Software Security** and **Machine Learning**, especially in leveraging AI technologies for program analysis, code generation and improving the reliability of software systems. I am now working on leveraging LLMs for static analysis and code generation.
+My research interests lie in the areas of **Software Engineering**, **Software Security** and **Machine Learning**, especially in leveraging machine learning for program analysis, code generation and improving the reliability of software systems.
 
-To date, my work has uncovered more than **100** previously unknown bugs in different open-source projects, including [Apache Druid](https://druid.apache.org/) and [Netty](https://netty.io/), as well as **41** bugs in the [Linux kernel](https://www.kernel.org/).
+To date, my work has uncovered more than **110** previously unknown bugs in different open-source projects, including [Apache Druid](https://druid.apache.org/) and [Netty](https://netty.io/), as well as **50** bugs in the [Linux kernel](https://www.kernel.org/).
