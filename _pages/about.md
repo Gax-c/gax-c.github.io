@@ -25,4 +25,4 @@ I am a member of ACEE (Advanced Honor Class for Engineering Education) in [Chu K
 
 My research interests lie in the areas of **Software Engineering**, **Software Security** and **Machine Learning**, especially in leveraging machine learning for program analysis, code generation and improving the reliability of software systems.
 
-To date, my work has uncovered more than **110** previously unknown bugs in different open-source projects, including [Apache Druid](https://druid.apache.org/) and [Netty](https://netty.io/), as well as **50** bugs in the [Linux kernel](https://www.kernel.org/).
+To date, my work has uncovered more than **120** previously unknown bugs in different open-source projects, including [Apache Druid](https://druid.apache.org/) and [Netty](https://netty.io/), as well as **63** bugs in the [Linux kernel](https://www.kernel.org/).
