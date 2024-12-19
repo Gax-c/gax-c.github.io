@@ -6,7 +6,7 @@ subtitle: zichenxie0106@gmail.com # <a href='https://www.zju.edu.cn/english/'>Zh
 
 profile:
   align: right
-  image: my_pic.jpg
+  image: my_pic.png
   image_circular: false # crops the image to make it circular
   more_info: # >
     # <p>555 your office number</p>
