@@ -23,6 +23,6 @@ I am an incoming CS PhD student at the [University of Virginia (UVA)](https://en
 
 I am a member of ACEE (Advanced Honor Class for Engineering Education) in [Chu Kochen Honors College](http://ckc.zju.edu.cn/ckcen/main.htm).
 
-My research interests lie in the areas of **Software Engineering**, **Software Security** and **Machine Learning**, especially in leveraging machine learning for program analysis, code generation and improving the reliability of software systems.
+My research interests lie in the areas of **Software Engineering**, **Software Security** and **Machine Learning**, especially in **Verifiable Code Generation** and **Software Testing**.
 
-To date, my work has uncovered more than **140** previously unknown bugs in different open-source projects, including [Apache Druid](https://druid.apache.org/) and [Netty](https://netty.io/), as well as **77** bugs in the [Linux Kernel](https://www.kernel.org/).
+To date, my work has uncovered more than **150** previously unknown bugs in different open-source projects, including [Apache Druid](https://druid.apache.org/) and [Netty](https://netty.io/), as well as **92** bugs in the [Linux Kernel](https://www.kernel.org/).
