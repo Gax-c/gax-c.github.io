@@ -2,18 +2,18 @@
 # Site settings
 # -----------------------------------------------------------------------------
 
-title: Zichen Xie # the website title (if blank, full name will be used instead)
-first_name: Zichen
+title: Grayson Xie # the website title (if blank, full name will be used instead)
+first_name: Grayson
 middle_name: 
 last_name: Xie
-email: zichenxie0106@gmail.com
+email: graysonxie@virginia.edu
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  Zichen Xie's homepage.
+  Grayson Xie's homepage.
 footer_text: # >
   # Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
   # Hosted by <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.
   # Photos from <a href="https://unsplash.com" target="_blank">Unsplash</a>.
-keywords: Zichen Xie, Gax, academic-website, portfolio-website, homepage # add your own keywords or leave empty
+keywords: Grayson Xie, Zichen Xie, Gax, academic-website, portfolio-website, homepage # add your own keywords or leave empty
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
 icon: logo.png # the emoji used as the favicon (alternatively, provide image name in /assets/img/)
 
@@ -133,8 +133,8 @@ bing_site_verification: # out your bing-site-verification ID (Bing Webmaster)
 # Blog
 # -----------------------------------------------------------------------------
 
-blog_name: Zichen Xie # blog_name will be displayed in your blog page
-blog_description: Zichen Xie's Blog
+blog_name: Grayson Xie # blog_name will be displayed in your blog page
+blog_description: Grayson Xie's Blog
 permalink: /blog/:year/:title/
 lsi: false # produce an index for related posts
 
