@@ -19,10 +19,10 @@ internships: true
 social: true # includes social icons at the bottom of the picture
 ---
 
-I am a first year CS PhD student at the [University of Virginia (UVA)](https://engineering.virginia.edu/department/computer-science) advised by [Prof. Wenxi Wang](https://wenxiwang.github.io/index.html). I earned my bachelor's degree at [Zhejiang University(ZJU)](https://www.zju.edu.cn/english/), and it's my honor to work with [Prof. Lingming Zhang](https://lingming.cs.illinois.edu/) and [Professor Shouling Ji](https://scholar.google.com/citations?user=5HoF_9oAAAAJ&hl=en&oi=ao) during my undergraduate time. 
+I am a first-year CS Ph.D. student at the [University of Virginia (UVA)](https://engineering.virginia.edu/department/computer-science), advised by [Prof. Wenxi Wang](https://wenxiwang.github.io/index.html). I earned my bachelor's degree from [Zhejiang University (ZJU)](https://www.zju.edu.cn/english/), where I was fortunate to work with [Prof. Lingming Zhang](https://lingming.cs.illinois.edu/) and [Prof. Shouling Ji](https://scholar.google.com/citations?user=5HoF_9oAAAAJ&hl=en&oi=ao).
 
-I am a member of ACEE (Advanced Honor Class for Engineering Education) in [Chu Kochen Honors College](http://ckc.zju.edu.cn/ckcen/main.htm).
+I am a member of the Advanced Honor Class for Engineering Education (ACEE) in [Chu Kochen Honors College](http://ckc.zju.edu.cn/ckcen/main.htm).
 
-My research interests lie in the areas of **Software Engineering**, **Software Security** and **Machine Learning**, especially in **Verifiable Code Generation** and **Software Testing**.
+My research interests lie in **Software Engineering**, **Software Security**, and **Machine Learning**, with a focus on **Verifiable Code Generation**, **Program Analysis**, and **Software Testing**.
 
-To date, my work has uncovered more than **150** previously unknown bugs in different open-source projects, including [Apache Druid](https://druid.apache.org/) and [Netty](https://netty.io/), as well as **92** bugs in the [Linux Kernel](https://www.kernel.org/).
+To date, my work has uncovered more than **150** previously unknown bugs in open-source projects, including [Apache Druid](https://druid.apache.org/) and [Netty](https://netty.io/), as well as **92** bugs in the [Linux Kernel](https://www.kernel.org/).
