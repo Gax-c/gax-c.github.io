@@ -1,8 +1,8 @@
 ---
-layout: page
+layout: redirect
 permalink: /blog/
 title: blog
-nav: false
+nav: true
 nav_order: 2
 # pagination:
 #   enabled: true
@@ -15,5 +15,3 @@ nav_order: 2
 #     before: 1 # The number of links before the current page
 #     after: 3 # The number of links after the current page
 ---
-
-I do not currently maintain a blog on this site. Please see my [publications](/publications/) for recent research updates.
