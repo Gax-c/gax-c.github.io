@@ -19,7 +19,7 @@ internships: true
 social: true # includes social icons at the bottom of the picture
 ---
 
-I am a first-year CS Ph.D. student at the [University of Virginia (UVA)](https://engineering.virginia.edu/department/computer-science), advised by [Prof. Wenxi Wang](https://wenxiwang.github.io/index.html). I earned my bachelor's degree from [Zhejiang University (ZJU)](https://www.zju.edu.cn/english/), where I was fortunate to work with [Prof. Lingming Zhang](https://lingming.cs.illinois.edu/) and [Prof. Shouling Ji](https://scholar.google.com/citations?user=5HoF_9oAAAAJ&hl=en&oi=ao).
+I am a second-year CS Ph.D. student at the [University of Virginia (UVA)](https://engineering.virginia.edu/department/computer-science), advised by [Prof. Wenxi Wang](https://wenxiwang.github.io/index.html). I earned my bachelor's degree from [Zhejiang University (ZJU)](https://www.zju.edu.cn/english/), where I was fortunate to work with [Prof. Lingming Zhang](https://lingming.cs.illinois.edu/) and [Prof. Shouling Ji](https://scholar.google.com/citations?user=5HoF_9oAAAAJ&hl=en&oi=ao).
 
 I am a member of the Advanced Honor Class for Engineering Education (ACEE) in [Chu Kochen Honors College](http://ckc.zju.edu.cn/ckcen/main.htm).
 
