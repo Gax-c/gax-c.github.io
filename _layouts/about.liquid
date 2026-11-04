@@ -68,12 +68,6 @@ layout: default
       {% include latest_posts.liquid %}
     {% endif %}
 
-    <!-- Highlights (items in _data/highlights.yml) -->
-    {% if page.highlights and site.data.highlights.size > 0 %}
-      <h2>highlights</h2>
-      {% include highlights.liquid %}
-    {% endif %}
-
     <!-- Selected papers -->
     {% if page.selected_papers %}
       <h2>
