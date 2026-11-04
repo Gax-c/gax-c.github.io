@@ -1,0 +1,38 @@
+# Items shown in the "highlights" section of the homepage, top to bottom.
+# The section appears above "selected publications" when `highlights: true`
+# is set in _pages/about.md. Delete an item to stop showing it.
+#
+# Fields (only `title` is required):
+#   title:        card heading
+#   url:          where the heading links to
+#   tags:         short labels shown above the heading, e.g. [NeurIPS 2026]
+#   description:  a sentence or two; Markdown is allowed
+#   embed:        extra content from a file in _includes/highlights/
+#   links:        buttons under the card
+#     - name:     button text
+#       url:      button link
+#       icon:     Font Awesome classes, e.g. fa-solid fa-trophy (optional)
+#       primary:  true makes it the filled, eye-catching button (optional)
+
+- title: VeriContest Leaderboard
+  url: https://hiprel-group.github.io/VeriContest/
+  tags: [NeurIPS 2026, Submissions open]
+  description: >-
+    A benchmark for verifiable code generation: 1,006 competitive-programming
+    problems from LeetCode and Codeforces, where models must produce Rust code,
+    specifications, and proofs that the Verus verifier accepts.
+  embed: vericontest_leaderboard.liquid
+  links:
+    - name: View leaderboard
+      url: https://hiprel-group.github.io/VeriContest/
+      icon: fa-solid fa-trophy
+      primary: true
+    - name: Dataset
+      url: https://huggingface.co/collections/Gax-c/vericontest
+      icon: fa-solid fa-database
+    - name: Code
+      url: https://github.com/HIPREL-Group/VeriContest
+      icon: fa-brands fa-github
+    - name: Paper
+      url: https://arxiv.org/abs/2605.08553
+      icon: fa-solid fa-file-lines

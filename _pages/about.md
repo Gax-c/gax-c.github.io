@@ -14,6 +14,7 @@ profile:
     # <p>Your City, State 12345</p>
 
 news: false # includes a list of news items
+highlights: true # shows the items in _data/highlights.yml above selected publications
 selected_papers: true # includes a list of papers marked as "selected={true}"
 internships: true
 social: true # includes social icons at the bottom of the picture

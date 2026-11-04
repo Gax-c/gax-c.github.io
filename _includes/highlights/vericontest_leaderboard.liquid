@@ -1,0 +1,83 @@
+{% comment %}
+  Live top-5 table for the VeriContest highlight (see _data/highlights.yml).
+  Rows are loaded in the browser from the leaderboard's own data, so they stay
+  current without redeploying this site. If the data can't be loaded, the
+  table stays hidden and the rest of the card still shows.
+{% endcomment %}
+<div class="highlight-board" id="vc-board" hidden>
+  <p class="highlight-headline">The top model solves only <strong id="vc-top-score"></strong> of problems end-to-end.</p>
+  <table class="highlight-table">
+    <caption>End2End (description → verified program), model track, pass@1</caption>
+    <thead>
+      <tr>
+        <th class="highlight-rank" scope="col">#</th>
+        <th scope="col">Model</th>
+        <th class="highlight-org" scope="col">Org</th>
+        <th class="highlight-score" scope="col">Pass@1</th>
+      </tr>
+    </thead>
+    <tbody id="vc-rows"></tbody>
+  </table>
+</div>
+
+<script>
+  (function () {
+    var board = document.getElementById('vc-board');
+    var tbody = document.getElementById('vc-rows');
+    if (!board || !tbody || !window.fetch) return;
+
+    fetch('https://hiprel-group.github.io/VeriContest/static/leaderboard.json')
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (d) {
+        var release = d.release && d.release.id;
+        var proto = (d.protocols || []).filter(function (p) {
+          return p.release === release && p.track === 'fixed_prompt' && p.task === 'End2End' && p.input_mode === 'nl';
+        })[0];
+        if (!proto) return;
+
+        var rows = (d.entries || [])
+          .filter(function (e) {
+            return e.protocol_id === proto.id && e.rankable && e.status === 'evaluation_checked';
+          })
+          .map(function (e) {
+            var score = e.split_scores ? e.split_scores.full : e.split === 'full' ? e.score : NaN;
+            return { name: e.system, org: e.org || '', score: score };
+          })
+          .filter(function (e) {
+            return Number.isFinite(e.score);
+          })
+          .sort(function (a, b) {
+            return b.score - a.score || a.name.localeCompare(b.name);
+          });
+        if (!rows.length) return;
+
+        var rank = 0;
+        rows.slice(0, 5).forEach(function (e, i) {
+          if (i === 0 || e.score !== rows[i - 1].score) rank = i + 1;
+          var tr = document.createElement('tr');
+          if (rank === 1) tr.className = 'highlight-leader';
+          [
+            ['highlight-rank', String(rank)],
+            ['', e.name],
+            ['highlight-org', e.org],
+            ['highlight-score', e.score.toFixed(1) + '%'],
+          ].forEach(function (c) {
+            var td = document.createElement('td');
+            if (c[0]) td.className = c[0];
+            td.textContent = c[1];
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+
+        document.getElementById('vc-top-score').textContent = rows[0].score.toFixed(1) + '%';
+        board.hidden = false;
+      })
+      .catch(function () {
+        /* leave the table hidden; the card still links to the leaderboard */
+      });
+  })();
+</script>
